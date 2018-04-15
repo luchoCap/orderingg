@@ -1,3 +1,9 @@
+Grupo 8
+CAPRARO, Luciano Federico
+DELGADO, Diego Sebastián
+LANZI, Juan Ignacio
+
+
 # Ordering
 
 Aplicación utilizada en la cursada 2018 de Ingenieria de Software. UTN-FRLP

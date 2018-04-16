@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
 
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <style>
+    thead {
+        font-weight: bold;
+    }
+    </style>
 </head>
 <body>
     <main class="container">
@@ -64,12 +69,12 @@
 
     <!-- Template handlebars de la tabla -->
     <script id="table-template" type="text/x-handlebars-template">
-        <table class="table is-fullwidth is-hoverable">
+        <table class="table is-striped is-fullwidth is-hoverable">
             <thead>
                 <tr>
                     <td>ID</td>
                     <td>Descripción</td>
-                    <td>Precio unitario</td>
+                    <td>Precio Unitario</td>
                     <td>Cantidad</td>
                     <td>Precio total</td>
                 </tr>

@@ -1,4 +1,4 @@
-Grupo 8
+﻿Grupo 8
 CAPRARO, Luciano Federico
 DELGADO, Diego Sebastián
 LANZI, Juan Ignacio
@@ -18,9 +18,11 @@ Aplicación utilizada en la cursada 2018 de Ingenieria de Software. UTN-FRLP
 
 `pip install -r requirements.txt`
 
+
 ## Iniciar la Base de Datos
 
 En Linux
+
 
 ```bash
 export FLASK_APP=orderingg.py

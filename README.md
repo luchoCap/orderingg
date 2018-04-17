@@ -1,6 +1,9 @@
 ﻿Grupo 8
+
 CAPRARO, Luciano Federico
+
 DELGADO, Diego Sebastián
+
 LANZI, Juan Ignacio
 
 

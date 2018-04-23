@@ -27,6 +27,10 @@ const Table = (function () {
         }
 
         render($el, data);
+
+        return {
+            update: render.bind(null, $el)
+        }
     }
 
     /**

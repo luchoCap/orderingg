@@ -8,6 +8,7 @@
         quantity: 0,
         order: API.getOrder()
     }
+    window.onChangeQunatity=actualizar;
 
     const refs = {}
 
@@ -26,6 +27,9 @@
     function onProductSelect(selectedProduct) {
         state.selectedProduct = selectedProduct;
         updateTotalPrice();
+    }
+     function actualizar(selectedProduct) {
+        state.selectedProduct = selectedProduct;
     }
 
     /**
@@ -56,6 +60,25 @@
             });
     }
 
+    function onEditProduct(){
+        productID = document.getElementById('select-prod').value;
+        cantidad = document.getElementById('quantity').value;
+
+
+        API.editProduct(1,productID,cantidad,API.getOrderProduct(1,productID))
+         .then(function (r) {
+                if (r.error) {
+                    console.error(r.error);
+                } else {
+                    API.getOrder().then(function (data) {
+                        refs.table.update(data);
+                    });
+
+                    refs.modal.close();
+                }
+            });
+    }
+
     /**
      * Inicializa la aplicacion
      **/
@@ -65,7 +88,8 @@
             products: state.products,
             onProductSelect: onProductSelect,
             onChangeQunatity: onChangeQunatity,
-            onAddProduct: onAddProduct
+            onAddProduct: onAddProduct,
+            onEditProduct: onEditProduct
         });
 
         // Inicializamos la tabla
@@ -78,4 +102,3 @@
     init();
     window.refs = refs;
 })()
-

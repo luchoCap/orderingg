@@ -81,4 +81,31 @@ const API = (function () {
         editProduct,
         addProduct
     }
+
+
+    function deleteProduct(orderId,productId) {
+     const data = JSON.stringify({ product: productId })
+     return fetch(`/order/${ orderId }/product/${ productId }`,
+         {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            }
+        ).then(function toJson(r) {
+         return r.json();
+        });
+    }
+
+/*
+function deleteProduct(orderId,productId)
+{
+
+  return fetch('/order/${ orderId }/product/${ productId }', {method: 'DELETE'});
+  return 'ok'
+}
+*/
+
 })()

@@ -74,15 +74,6 @@ const API = (function () {
         });
     }
 
-    return {
-        getOrder,
-        getProducts,
-        getOrderProduct,
-        editProduct,
-        addProduct
-    }
-
-
     function deleteProduct(orderId,productId) {
      const data = JSON.stringify({ product: productId })
      return fetch(`/order/${ orderId }/product/${ productId }`,
@@ -98,6 +89,19 @@ const API = (function () {
          return r.json();
         });
     }
+
+
+    return {
+        getOrder,
+        getProducts,
+        getOrderProduct,
+        editProduct,
+        addProduct, 
+        deleteProduct
+    }
+
+
+  
 
 /*
 function deleteProduct(orderId,productId)

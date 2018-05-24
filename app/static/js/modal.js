@@ -1,97 +1,161 @@
 const Modal = (function () {
 
-    /**
-     * Abre el modal
-     **/
-    function open($modal,productoID,tipo) {
-       
-        const editTitle = document.getElementById('edit-title');
-        const saveTitle = document.getElementById('save-title');
-        const editButton = document.getElementById('edit-button');
-        const saveButton = document.getElementById('save-button');
-        const sel = document.getElementById('select-prod');
-        const preUnitario = document.getElementById('preUnitario');
-        const nom = document.getElementById('nombre');
-      
+    const Quantity = {
+        /**
+         * Inicializa el input quantity
+         **/
+        init: function (config, context) {
+            this.$el = context.querySelector(config.el);
 
+            // Nos ponemos a escuchar cambios en el input de cantidad
+            this.$el.addEventListener('input', () => {
+                if (this.validate()) {
+                    config.onChangeQunatity(this.$el.value);
+                }
 
-        $modal.classList.add('is-active');
+                this.toggleError()
+            });
 
-        saveButton.classList.add('is-hidden');
-        saveTitle.classList.add('is-hidden');
-        editButton.classList.add('is-hidden');
-        editTitle.classList.add('is-hidden');
-        preUnitario.classList.add('is-hidden');
-        sel.classList.add('is-hidden');
-        nom.classList.add('is-hidden');
-       
+            return this;
+        },
 
+        /**
+         * Cambia el valor del input
+         **/
+        setValue: function (val) {
+            this.$el.value = val;
 
-        switch(tipo){
-            case "E" :
-            llenado(productoID);
+            const e = document.createEvent("HTMLEvents");
+            e.initEvent("input", false, true);
+            this.$el.dispatchEvent(e);
+        },
 
-             nom.classList.remove('is-hidden');
-             editButton.classList.remove('is-hidden');
-             editTitle.classList.remove('is-hidden');
-             preUnitario.classList.remove('is-hidden');
-             
-            API.getOrderProduct(1,productoID).then(function(r){onChangeQunatity(r);});
-           
-            break;
+        /**
+         * Valida el input
+         **/
+        validate: function () {
+            this.isValid = this.$el.value > 0;
+            return this.isValid;
+        },
 
-            case "A":
-             sel.classList.remove('is-hidden');
-             saveButton.classList.remove('is-hidden');
-             saveTitle.classList.remove('is-hidden');
-             preUnitario.classList.remove('is-hidden');
+        /**
+         * Muestra/Oculta los errores
+         **/
+        toggleError: function () {
+            const $errorQuantity = this.$el.parentElement
+                .querySelector('.help');
 
-             break;
-             default:
-                console.log("error")
+            this.$el.classList.toggle('is-danger', !this.isValid);
+            $errorQuantity.classList.toggle('is-hidden', this.isValid);
         }
-
-       
-    }
-
-    /**
-     * Cierra el modal
-     **/
-    function close($modal) {
-        $modal.classList.remove('is-active');
-    }
+    };
 
     /**
      * Inicializa el modal de agregar producto
      **/
     function init(config) {
         const $modal = document.querySelector(config.el);
+        const $edit = $modal.querySelector('#edit-button');
+        const $save = $modal.querySelector('#save-button');
+
+        // Inicializamos el input de cantidad
+        const $quantity = Quantity.init({
+            el: '#quantity',
+            onChangeQunatity: function (quantity) {
+                toggleButtons();
+                config.onChangeQunatity(quantity)
+            }
+        }, $modal);
 
         // Inicializamos el select de productos
-        Select.init({
+        const $select = Select.init({
             el: '#select',
             data: config.products,
-            onSelect: config.onProductSelect
+            onSelect: function (product) {
+                toggleButtons();
+                config.onProductSelect(product);
+            }
         });
 
-        // Nos ponemos a escuchar cambios en el input de cantidad
-        $modal.querySelector('#quantity')
-            .addEventListener('input', function () {
-                config.onChangeQunatity(this.value)
-            });
+        // Cambiamos el estado de save y edit
+        function toggleButtons() {
+            const isValid = $quantity.isValid && $select.isValid;
 
-        $modal.querySelector('#save-button')
-            .addEventListener('click', config.onAddProduct);
-
-        $modal.querySelector('#edit-button')
-            .addEventListener('click', config.onEditProduct);
-        
-
-
-        return {
-            close: close.bind(null, $modal),
-            open: open.bind(null, $modal)
+            if (isValid) {
+                $edit.removeAttribute('disabled');
+                $save.removeAttribute('disabled');
+            } else {
+                $edit.setAttribute('disabled', 'disabled');
+                $save.setAttribute('disabled', 'disabled');
+            }
         }
+
+        $save.addEventListener('click', function () {
+            config.onAddProduct().catch(function (err) {
+                $select.showErrorMsg(err.msg);
+                toggleButtons();
+            });
+        });
+
+        $edit.addEventListener('click', config.onEditProduct);
+
+        const modal = {
+            $modal,
+            $select,
+            $quantity,
+            $edit,
+            $save,
+            $editTitle: $modal.querySelector('#edit-title'),
+            $saveTitle: $modal.querySelector('#save-title'),
+        };
+
+        modal.close = close.bind(modal),
+        modal.open = open.bind(modal)
+        modal.openEdit = openEdit.bind(modal)
+
+        toggleButtons();
+        return modal;
+    }
+
+    /**
+     * Abre el modal en modo agregar
+     **/
+    function open() {
+        this.$edit.classList.add('is-hidden');
+        this.$editTitle.classList.add('is-hidden');
+
+        this.$save.classList.remove('is-hidden');
+        this.$saveTitle.classList.remove('is-hidden');
+
+        this.$select.clearSelect();
+        this.$select.enable();
+        this.$quantity.setValue(1);
+
+        this.$modal.classList.add('is-active');
+    }
+
+    /**
+     * Abre el modal en modo edicion
+     **/
+    function openEdit(product) {
+        this.$edit.classList.remove('is-hidden');
+        this.$editTitle.classList.remove('is-hidden');
+
+        this.$save.classList.add('is-hidden');
+        this.$saveTitle.classList.add('is-hidden');
+
+        this.$select.disable();
+        this.$select.selectValue(product.id);
+        this.$quantity.setValue(product.quantity);
+
+        this.$modal.classList.add('is-active');
+    }
+
+    /**
+     * Cierra el modal
+     **/
+    function close() {
+        this.$modal.classList.remove('is-active');
     }
     function llenado(productoID) //Completa el modal
     {
@@ -100,7 +164,7 @@ const Modal = (function () {
         const unitario = document.getElementById('preUnit');
         const precioT = document.getElementById('total-price');
         const cant = document.getElementById('quantity');
-        
+
         API.getOrderProduct(1,productoID).then(function (result)
         {
             nombre.value=nombree;

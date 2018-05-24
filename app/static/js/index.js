@@ -16,8 +16,12 @@
      * Actualiza el valor del precio total
      **/
     function updateTotalPrice() {
-        const totalPrice = state.selectedProduct.price * state.quantity;
-        $totalPrice.innerHTML = `Precio total: $ ${totalPrice}`
+        try {
+            const totalPrice = state.selectedProduct.price * state.quantity;
+            $totalPrice.innerHTML = `Precio total: $ ${totalPrice}`
+        } catch (e) {
+            $totalPrice.innerHTML = '';
+        }
     }
 
     /**
@@ -41,12 +45,48 @@
         updateTotalPrice();
     }
 
+    function onEditProduct() {
+        API.editProduct(1, state.selectedProduct.id, state.quantity)
+            .then(function (r) {
+                API.getOrder().then(function (data) {
+                    refs.table.update(data);
+                });
+
+                refs.modal.close();
+            });
+    }
+
     /**
      * Agrega un producto a una orden
      *
      **/
     function onAddProduct() {
-        API.addProduct(1, state.selectedProduct, state.quantity)
+        return API.addProduct(1, state.selectedProduct, state.quantity)
+            .then(function (r) {
+                if (r.error) {
+                    return Promise.reject({
+                        msg: "No puede existir 2 productos iguales en una orden"
+                    });
+                }
+
+                API.getOrder().then(function (data) {
+                    refs.table.update(data);
+                });
+
+                refs.modal.close();
+            })
+            .catch(function (err) {
+                if (err.msg) {
+                    return Promise.reject(err);
+                }
+                return Promise.reject({
+                    msg: "Seleccione un producto"
+                });
+            });
+    }
+
+    function onDeleteProduct(productId) {
+        API.deleteProduct(1, productId)
             .then(function (r) {
                 if (r.error) {
                     console.error(r.error);
@@ -54,8 +94,6 @@
                     API.getOrder().then(function (data) {
                         refs.table.update(data);
                     });
-
-                    refs.modal.close();
                 }
             });
     }
@@ -97,6 +135,10 @@
             el: '#orders',
             data: state.order
         });
+
+        refs.global = {
+            onDeleteProduct
+        }
     }
 
     init();

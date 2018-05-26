@@ -1,6 +1,7 @@
 __pycache_/
 *.py[cod]
 *$py.class
+.pytest_cache/
 
 app.db
 test.db

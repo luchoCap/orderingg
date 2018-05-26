@@ -56,13 +56,8 @@
                         <div class="field">
                             <label class="label">Cantidad</label>
                             <div class="control">
-                                <input id="quantity" class="input" type="number" min="0">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label id="preUnitario" class="label">Precio Unitario</label>
-                            <div class="control">
-                                <input id = "preUnit" class="input" readonly=”readonly”>
+                                <input id="quantity" class="input" type="number" min="1" value="1" required>
+                                <p class="help is-danger is-hidden">Por favor ingrese un numero mayor a 0</p>
                             </div>
                         </div>
 
@@ -72,7 +67,7 @@
                     </form>
                 </section>
                 <footer class="modal-card-foot">
-                    <button id="save-button" class="button is-success">Guardar</button>
+                    <button id="save-button" class="button is-success" disabled="disabled">Guardar</button>
                     <button id="edit-button" class="button is-warning">Editar</button>
                     <button class="button" onclick="refs.modal.close()">Cancelar</button>
                 </footer>
@@ -87,23 +82,23 @@
         <table class="table is-striped is-fullwidth is-hoverable">
             <thead>
                 <tr>
-                    <td>ID</td>
-                    <td>Descripción</td>
-                    <td>Precio Unitario</td>
-                    <td>Cantidad</td>
-                    <td>Precio total</td>
-                    <td></td>
-                    <td></td>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio unitario</th>
+                    <th>Cantidad</th>
+                    <th>Precio total</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {{# each products }}
                     <tr>
                         <td>{{ id }}</td>
-                        <td>{{ description }}</td>
+                        <td>{{ name }}</td>
                         <td>{{ price }}</td>
                         <td>{{ quantity }}</td>
                         <td>{{ totalPrice }}</td>
+
                         <td><button class="button is-pulled-right" onclick="refs.modal.open({{ id }}, 'E')" style="background:blue">
                         <span class="icon">
                             <i class="fas fa-edit"></i>
@@ -113,6 +108,7 @@
                             <span class="icon"><i class="fas fa-minus-circle"></i></span>
                             <span>Eliminar</span>
                         </button></td>
+
                     </tr>
                 {{/ each }}
             </tbody>
@@ -123,6 +119,7 @@
                     <td></td>
                     <td>Total</td>
                     <td>{{ orderPrice }}</td>
+                    <td></td>
                 </tr>
             </tfoot>
         </table>
@@ -131,13 +128,15 @@
     <!-- Template handlebars del select de productos -->
     <script id="select-template" type="text/x-handlebars-template">
         <div class="select">
-            <select id="select-prod">
-                <option disabled selected value="">Seleccione un Producto</option>
+            <select id="select-prod" required>
+                <option disabled selected value="">Seleccione un producto</option>
                 {{# each products }}
                     <option value="{{ id }}">{{ name }}</option>
                 {{/ each }}
             </select>
         </div>
+
+        <p class="help is-danger is-hidden"></p>
     </script>
     {% endraw %}
 </body>

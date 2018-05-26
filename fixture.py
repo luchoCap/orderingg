@@ -1,5 +1,8 @@
 from app.models import Product, Order, OrderProduct
-from app import db
+from app import create_app, db
+
+app = create_app()
+app.app_context().push()
 
 def addOrders():
     orders = Order.query.all()

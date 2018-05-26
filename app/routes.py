@@ -1,14 +1,17 @@
 from sqlalchemy import and_
 
-from app import app, db
+from app import db
 from app.models import Product, Order, OrderProduct
-from flask import request, jsonify, render_template
+from flask import request, jsonify, render_template, abort, current_app
 
-@app.route("/")
+from flask import Blueprint
+rest = Blueprint('rest', __name__, template_folder='templates')
+
+@rest.route("/")
 def hello():
     return render_template('orders.html')
 
-@app.route("/product", methods=['GET', 'POST'])
+@rest.route("/product", methods=['GET', 'POST'])
 def products():
     """
     Endpoint para obtener todos los productos o crear uno nuevo
@@ -26,7 +29,7 @@ def products():
         p = Product.query.all()
         return jsonify([i.serialize for i in p])
 
-@app.route("/order", methods=['GET'])
+@rest.route("/order", methods=['GET'])
 def orders():
     """
     Obtiene todas las ordenes
@@ -35,7 +38,7 @@ def orders():
     orders = Order.query.all()
     return jsonify([order.serialize for order in orders])
 
-@app.route("/order/<pk>", methods=['GET'])
+@rest.route("/order/<pk>", methods=['GET'])
 def order(pk):
     """
     Obtiene la orden con id `pk`
@@ -52,7 +55,7 @@ def order(pk):
 
     return jsonify(order.serialize)
 
-@app.route("/order/<pk>/product", methods=['POST'])
+@rest.route("/order/<pk>/product", methods=['POST'])
 def addProductToOrder(pk):
     # obtenemos las ordenes
     order = Order.query.get(pk)
@@ -84,7 +87,7 @@ def addProductToOrder(pk):
 
     return jsonify(order.serialize), 201
 
-@app.route("/order/<pk_order>/product/<pk_product>", methods=['GET', 'PUT', 'DELETE'])
+@rest.route("/order/<pk_order>/product/<pk_product>", methods=['GET', 'PUT', 'DELETE'])
 def order_product_detail(pk_order, pk_product):
     """
     Obtiene un producto de una orden y modifica un producto de una orden
@@ -98,22 +101,31 @@ def order_product_detail(pk_order, pk_product):
     if (not order_product):
         return jsonify({ 'error': 'not-found' }), 404
 
-    if request.method == 'GET':
-        return jsonify(order_product.serialize)
-    elif request.method == 'DELETE':
-        order_product_json = order_product.serialize
-        db.session.delete(order_product)
-        db.session.commit()
-        return jsonify(order_product_json)
-    else:
-        new_quantity = request.get_json()['quantity']
-        new_product = request.get_json()['product']
+    order_product_json = order_product.serialize
+
+    if request.method == 'PUT':
+        new_quantity = request.get_json().get('quantity', False)
 
         if (new_quantity):
-            order_product.quantity = new_quantity
-        if (new_product):
-            order_product.product = Product.query.get(new_product)
-            order = Order.query.get(pk_order)
-            order.products.append(order_product)
-        db.session.commit()
-        return jsonify(order_product.serialize)
+            order_product.quantity = int(new_quantity)
+            order_product_json = order_product.serialize
+
+    if request.method == 'GET':
+        return jsonify(order_product_json)
+
+    if request.method == 'DELETE':
+        db.session.delete(order_product)
+
+    db.session.commit()
+    return jsonify(order_product_json)
+
+@rest.route('/shutdown')
+def server_shutdown():
+    if not current_app.testing:
+        abort(404)
+    shutdown = request.environ.get('werkzeug.server.shutdown')
+    if not shutdown:
+        abort(500)
+
+    shutdown()
+    return 'Shutting down...'

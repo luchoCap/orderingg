@@ -4,7 +4,7 @@ const API = (function () {
      *
      * @param {Number} orderId id de la orden
      */
-     function getOrder(orderId) {
+    function getOrder(orderId) {
         return fetch('/order/1')
             .then(function toJson(r) {
                 return r.json();
@@ -88,25 +88,6 @@ const API = (function () {
         });
     }
 
-    function deleteProduct(orderId,productId) {
-     const data = JSON.stringify({ product: productId })
-     return fetch(`/order/${ orderId }/product/${ productId }`,
-         {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: data
-            }
-        ).then(function toJson(r) {
-         return r.json();
-         
-
-        });
-    }
-
-
     return {
         getOrder,
         getProducts,
@@ -115,6 +96,7 @@ const API = (function () {
         deleteProduct,
         addProduct
     }
+
 
 
 

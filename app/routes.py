@@ -42,7 +42,6 @@ def orders():
 def order(pk):
     """
     Obtiene la orden con id `pk`
-
     Si no se encuentra la orden, se responde con un 404
     """
 
@@ -91,7 +90,6 @@ def addProductToOrder(pk):
 def order_product_detail(pk_order, pk_product):
     """
     Obtiene un producto de una orden y modifica un producto de una orden
-
     Si no se encuentra la orden, se responde con un 404.
     Si no se encuentra el producto, se responde con un 404
     """

@@ -51,7 +51,7 @@ class OrderingTestCase(TestCase):
 
         # Verifica que en la lista de productos haya un solo producto
         self.assertEqual(len(p), 1, "No hay productos")
-
+        
 if __name__ == '__main__':
     unittest.main()
 

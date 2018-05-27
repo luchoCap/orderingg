@@ -76,6 +76,15 @@ class OrderingTestCase(TestCase):
         
         self.assertTrue(orderP.totalPrice == 25, "Fallo la operacion totalPrice")
 
+    def test_get_order(self):
+
+        o=Order()
+        db.session.add(o)
+        db.session.commit()
+        resp = self.client.get('/order')    
+        data = json.loads(resp.data)
+        self.assertEqual(len(data), 1, "No agarró nada")
+
 
 if __name__ == '__main__':
     unittest.main()

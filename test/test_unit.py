@@ -51,7 +51,24 @@ class OrderingTestCase(TestCase):
 
         # Verifica que en la lista de productos haya un solo producto
         self.assertEqual(len(p), 1, "No hay productos")
+
+    def Cantidad_Negativa(self):
+        Ord = Orden(id=1)
+        db.session.add(Ord)
+
+        pro = Product(id=1, name='Plato', price=10)
+        db.session.add(Pro)
+
+        OrderProduct = OrderProduct(order_id=1, product_id=1, quantity=-1, product=pro)
+        db.session.add(OrderProduct)
+        db.session.commit()
+
+        resp = self.client.get('/order/1/product/1')
+        self.assert200(resp, "No existe Orden")
+
         
+
+
 if __name__ == '__main__':
     unittest.main()
 

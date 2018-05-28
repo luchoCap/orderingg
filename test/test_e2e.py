@@ -38,13 +38,56 @@ class Ordering(unittest.TestCase):
 
         self.driver = webdriver.Chrome()
 
-#  def test_title(self):
- #       driver = self.driver
-  #      driver.get(self.baseURL)
-   #     add_product_button = driver.find_element_by_xpath('/html/body/main/div[1]/div/button')
-    #    add_product_button.click()
-     #   modal = driver.find_element_by_id('modal')
-      #  assert modal.is_displayed(), "El modal no esta visible"
+
+
+"""
+    def test_title(self):
+        driver = self.driver
+        driver.get(self.baseURL)
+        add_product_button = driver.find_element_by_xpath('/html/body/main/div[1]/div/button')
+        add_product_button.click()
+        modal = driver.find_element_by_id('modal')
+        assert modal.is_displayed(), "El modal no esta visible"
+"""
+
+    def test_borrar_fila(self):
+        #Creo los productos
+        prod = Product(id= 1, name= 'Tenedor', price= 50)
+        db.session.add(prod)
+        prod2 = Product(id= 2, name= 'Calabaza', price= 30)
+        db.session.add(prod)
+
+        #Creo una orden
+        order = Order(id= 1)
+        db.session.add(order)
+
+        #Añado los productos a la orden
+        orderProduct = OrderProduct(order_id= 1, product_id= 1, quantity= 1, product= prod)
+        db.session.add(orderProduct)
+        orderProduct = OrderProduct(order_id= 1, product_id= 2, quantity= 1, product= prod2)
+        db.session.add(orderProduct)
+        db.session.commit()
+
+        driver = self.driver
+        driver.get(self.baseURL)
+
+        time.sleep(1)
+
+        delete_product_button = driver.find_element_by_xpath('//*[@id="orders"]/table/tbody/tr/td[6]/button[2]')
+        delete_product_button.click()
+
+        time.sleep(1)
+
+        op = OrderProduct.query.all()
+
+        # Verifica que se haya borrado el producto de la lista de productos
+        self.assertEqual(len(op), 1, "No se borró el producto")
+
+        #Verifica que se haya borrado el producto correcto
+        self.assertNotEqual(op[0].product, prod, "No se borró el producto correcto")
+
+
+
 
     def tearDown(self):
         self.driver.get('http://localhost:5000/shutdown')
@@ -53,6 +96,7 @@ class Ordering(unittest.TestCase):
         db.drop_all()
         self.driver.close()
         self.app_context.pop()
+
 
     def test_integracion_cantidad_negativa(self):
         orde = Order(id=1)
@@ -85,6 +129,35 @@ class Ordering(unittest.TestCase):
 
     
 
+    def test_modal(self):
+        orden = Order()
+        db.session.add(orden)
+        producto = Product(name= 'Cuchara', price= 20)
+        db.session.add(producto)
+        orderP=OrderProduct(order_id=1, product_id=1 ,product=producto ,quantity=1)
+        db.session.add(orderP)
+        db.session.commit()
+       
+        driver = self.driver
+        driver.get(self.baseURL)
+        submit_buttom=driver.find_element_by_xpath('/html/body/main/div[2]/div/table/tbody/tr[1]/td[6]/button[1]')
+        submit_buttom.click()
+        selected_box=driver.find_element_by_xpath('//*[@id="select-prod"]/option[1]')
+
+        quantity_box = driver.find_element_by_xpath('//*[@id="quantity"]')
+        totalprice_box=driver.find_element_by_id("total-price")
+        nombre_box=driver.find_element_by_id("nombre")
+        time.sleep(1)
+
+        self.assertNotEquals(selected_box," ")
+        self.assertNotEquals(nombre_box," ")
+        self.assertNotEquals(quantity_box," ")
+        self.assertNotEquals(totalprice_box," ")
+
+    
+
+
+
+
 if __name__ == "__main__":
     unittest.main()
-

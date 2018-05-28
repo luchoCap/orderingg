@@ -98,6 +98,7 @@
                         <td>{{ price }}</td>
                         <td>{{ quantity }}</td>
                         <td>{{ totalPrice }}</td>
+
                         <td>
                             <button class="button is-small is-warning" onClick="refs.modal.openEdit({ id: {{ id }}, quantity: {{ quantity }} })">
                                 <i class="fa fa-edit"></i>
@@ -107,6 +108,7 @@
                                 <i class="fa fa-trash"></i>
                             </button>
                         </td>
+
                     </tr>
                 {{/ each }}
             </tbody>

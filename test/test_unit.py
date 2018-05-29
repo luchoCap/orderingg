@@ -65,7 +65,7 @@ class OrderingTestCase(TestCase):
         db.session.add(OrderProd)
         db.session.commit()
 
-        resp = OrderProduct.query.all()
+        resp = OrderProduct.query.all()                     #Revisar, la orden no se tiene que cargar
         self.assertEqual(len(resp),1, "Producto creado")
 
     def test_get(self):

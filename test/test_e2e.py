@@ -90,7 +90,30 @@ class Ordering(unittest.TestCase):
 
         #Verifica que se haya borrado el producto correcto
         self.assertNotEqual(op[0].product, prod, "No se borró el producto correcto")
+        
+    def test_modal(self):
+        orden = Order()
+        db.session.add(orden)
+        producto = Product(name= 'Cuchara', price= 20)
+        db.session.add(producto)
+        orderP=OrderProduct(order_id=1, product_id=1 ,product=producto ,quantity=1)
+        db.session.add(orderP)
+        db.session.commit()
+       
+        driver = self.driver
+        driver.get(self.baseURL)
+        submit_buttom=driver.find_element_by_xpath('/html/body/main/div[2]/div/table/tbody/tr[1]/td[6]/button[1]')
+        submit_buttom.click()
 
+        selected_box=driver.find_element_by_id('select-prod').text
+        quantity_box = driver.find_element_by_id('quantity').text
+        totalprice_box=driver.find_element_by_id('total-price').text
+        nombre_box=driver.find_element_by_id('nombre').text
+
+        self.assertNotEqual(selected_box," ")
+        self.assertNotEqual(nombre_box," ")
+        self.assertNotEqual(quantity_box," ")
+        self.assertNotEqual(totalprice_box," ")
 
     def test_integracion_cantidad_negativa(self):
         orde = Order(id=1)
@@ -123,29 +146,7 @@ class Ordering(unittest.TestCase):
 
     
 
-    def test_modal(self):
-        orden = Order()
-        db.session.add(orden)
-        producto = Product(name= 'Cuchara', price= 20)
-        db.session.add(producto)
-        orderP=OrderProduct(order_id=1, product_id=1 ,product=producto ,quantity=1)
-        db.session.add(orderP)
-        db.session.commit()
-       
-        driver = self.driver
-        driver.get(self.baseURL)
-        submit_buttom=driver.find_element_by_xpath('/html/body/main/div[2]/div/table/tbody/tr[1]/td[6]/button[1]')
-        submit_buttom.click()
-
-        selected_box=driver.find_element_by_id('select-prod')
-        quantity_box = driver.find_element_by_id('quantity')
-        totalprice_box=driver.find_element_by_id('total-price')
-        nombre_box=driver.find_element_by_id('nombre')
-
-        self.assertNotEqual(selected_box," ")
-        self.assertNotEqual(nombre_box," ")
-        self.assertNotEqual(quantity_box," ")
-        self.assertNotEqual(totalprice_box," ")
+    
 
     
 

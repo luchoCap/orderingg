@@ -4,8 +4,8 @@ const API = (function () {
      *
      * @param {Number} orderId id de la orden
      */
-    function getOrder(orderId) {
-        return fetch('/order/1')
+    function getOrder() {
+        return fetch("/order/1")
             .then(function toJson(r) {
                 return r.json();
             });
@@ -38,7 +38,7 @@ const API = (function () {
      *
      */
     function editProduct(orderId, productId, quantity, product) {
-        const data = JSON.stringify({ quantity: quantity, product: product })
+        const data = JSON.stringify({ quantity: quantity, product: product });
 
         return fetch(`/order/${ orderId }/product/${ productId }`,
             {

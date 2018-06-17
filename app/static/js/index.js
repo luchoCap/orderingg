@@ -1,5 +1,5 @@
 (function () {
-    const $totalPrice = document.querySelector('#total-price');
+    const $totalPrice = document.querySelector("#total-price");
 
     // Estado de la aplicacion
     const state = {
@@ -7,7 +7,7 @@
         selectedProduct: null,
         quantity: 0,
         order: API.getOrder()
-    }
+    };
     window.onChangeQunatity=actualizar;
 
     const refs = {}
@@ -47,7 +47,7 @@
 
     function onEditProduct() {
         API.editProduct(1, state.selectedProduct.id, state.quantity)
-            .then(function (r) {
+            .then(function () {
                 API.getOrder().then(function (data) {
                     refs.table.update(data);
                 });
@@ -99,11 +99,12 @@
     }
 
     function onEditProduct(){
-        productID = document.getElementById('select-prod').value;
-        cantidad = document.getElementById('quantity').value;
+        /*eslint no-implicit-globals: "error"*/
+        window.productID = document.getElementById('select-prod').value;
+        window.cantidad = document.getElementById('quantity').value;
 
 
-        API.editProduct(1,productID,cantidad,API.getOrderProduct(1,productID))
+        API.editProduct(1,window.productID,window.cantidad,API.getOrderProduct(1,productID))
          .then(function (r) {
                 if (r.error) {
                     console.error(r.error);

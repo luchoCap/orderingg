@@ -29,13 +29,19 @@ def products():
         p = Product.query.all()
         return jsonify([i.serialize for i in p])
 
-@rest.route("/order", methods=['GET'])
+@rest.route("/order", methods=['GET', 'DELETE'])
 def orders():
     """
     Obtiene todas las ordenes
     """
 
-    orders = Order.query.all()
+    if request.method == 'GET':
+        orders = Order.query.all()
+        
+
+    if request.method == 'DELETE':
+        db.session.delete()
+
     return jsonify([order.serialize for order in orders])
 
 @rest.route("/order/<pk>", methods=['GET'])

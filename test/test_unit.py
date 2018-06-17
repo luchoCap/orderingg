@@ -53,21 +53,7 @@ class OrderingTestCase(TestCase):
         self.assertEqual(len(p), 1, "No hay productos")
 
 
-    def test_Cantidad_Negativa(self):
-
-        Orde = Order(id=1)
-        db.session.add(Orde)
-
-        pro = Product(id=1, name='Plato', price=10)
-        db.session.add(pro)
-
-        OrderProd= OrderProduct(order_id=1, product_id=1, quantity=-10, product=pro)
-        db.session.add(OrderProd)
-        db.session.commit()
-
-        resp = OrderProduct.query.all()                     #Revisar, la orden no se tiene que cargar
-        self.assertEqual(len(resp),1, "Producto creado")
-
+    
     def test_get(self):
         Orde = Order(id=1)
         db.session.add(Orde)

@@ -2,3 +2,5 @@
 format = ${cyan}%(path)s${reset}:${yellow_bold}%(row)d${reset}:${green_bold}%(col)d${reset}: ${red_bold}%(code)s${reset} %(text)s
 exclude = .git,*migrations*
 max-complexity = 4
+max-line-length = 86
+

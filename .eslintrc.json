@@ -68,12 +68,9 @@
 
         "indent": 2,
         "max-statements": ["warn", {"max": 30}, {"ignoreTopLevelFunctions": true}],
-        "max-params": ["warn", {"max": 3}],
+        "max-params": ["warn", {"max": 4}],
         "max-len": ["warn", {"code": 120, "tabWidth": 4}],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
+        "linebreak-style": 0,
         "quotes": [
             "error",
             "double"

@@ -1,10 +1,13 @@
+"""Tengo que poner algo aca."""
 from app.models import Product, Order, OrderProduct
 from app import create_app, db
 
 app = create_app()
 app.app_context().push()
 
+
 def addOrders():
+    """Agrega una orden."""
     orders = Order.query.all()
 
     if not orders:
@@ -47,7 +50,9 @@ def addOrders():
 
         db.session.commit()
 
+
 def addProducts():
+    """Agrega un producto."""
     products = Product.query.all()
     if not products:
         p = Product(name="Silla", price=500)
@@ -59,6 +64,7 @@ def addProducts():
         p = Product(name="Individual", price=250)
         db.session.add(p)
         db.session.commit()
+
 
 if __name__ == '__main__':
     addProducts()

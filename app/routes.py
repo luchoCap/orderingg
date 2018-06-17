@@ -9,6 +9,7 @@ rest = Blueprint('rest', __name__, template_folder='templates')
 
 @rest.route("/")
 def hello():
+    """Renderiza el html"""
     return render_template('orders.html')
 
 @rest.route("/product", methods=['GET', 'POST'])
@@ -31,9 +32,7 @@ def products():
 
 @rest.route("/order", methods=['GET'])
 def orders():
-    """
-    Obtiene todas las ordenes
-    """
+    """Obtiene todas las ordenes"""
 
     orders = Order.query.all()
     return jsonify([order.serialize for order in orders])
@@ -56,12 +55,13 @@ def order(pk):
 
 @rest.route("/order/<pk>/product", methods=['POST'])
 def addProductToOrder(pk):
+    """Agrega producto a orden"""
     # obtenemos las ordenes
     order = Order.query.get(pk)
 
     # Si la orden no existe, levantamos el error
     if (not order):
-        return jsonify({ 'error': '<order {}> not found'.format(pk) }), 404
+        return jsonify({'error': '<order {}> not found'.format(pk)}), 404
 
     product_data = request.get_json()
     product = product_data['product']
@@ -93,11 +93,10 @@ def order_product_detail(pk_order, pk_product):
     Si no se encuentra la orden, se responde con un 404.
     Si no se encuentra el producto, se responde con un 404
     """
-
-    order_product = OrderProduct.query.filter(and_(OrderProduct.order_id==pk_order, OrderProduct.product_id==pk_product)).all()[0]
+    order_product = OrderProduct.query.filter(and_(OrderProduct.order_id == pk_order, OrderProduct.product_id == pk_product)).all()[0]
 
     if (not order_product):
-        return jsonify({ 'error': 'not-found' }), 404
+        return jsonify({'error': 'not-found'}), 404
 
     order_product_json = order_product.serialize
 

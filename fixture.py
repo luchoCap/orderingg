@@ -4,6 +4,7 @@ from app import create_app, db
 app = create_app()
 app.app_context().push()
 
+
 def addOrders():
     orders = Order.query.all()
 

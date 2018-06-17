@@ -10,7 +10,7 @@
     };
     window.onChangeQunatity=actualizar;
 
-    const refs = {}
+    const refs = {};
 
     /**
      * Actualiza el valor del precio total
@@ -18,9 +18,9 @@
     function updateTotalPrice() {
         try {
             const totalPrice = state.selectedProduct.price * state.quantity;
-            $totalPrice.innerHTML = `Precio total: $ ${totalPrice}`
+            $totalPrice.innerHTML = `Precio total: $ ${totalPrice}`;
         } catch (e) {
-            $totalPrice.innerHTML = '';
+            $totalPrice.innerHTML = "";
         }
     }
 
@@ -32,7 +32,7 @@
         state.selectedProduct = selectedProduct;
         updateTotalPrice();
     }
-     function actualizar(selectedProduct) {
+    function actualizar(selectedProduct) {
         state.selectedProduct = selectedProduct;
     }
 
@@ -100,12 +100,12 @@
 
     function onEditProduct(){
         /*eslint no-implicit-globals: "error"*/
-        window.productID = document.getElementById('select-prod').value;
-        window.cantidad = document.getElementById('quantity').value;
+        window.productID = document.getElementById("select-prod").value;
+        window.cantidad = document.getElementById("quantity").value;
 
 
-        API.editProduct(1,window.productID,window.cantidad,API.getOrderProduct(1,productID))
-         .then(function (r) {
+        API.editProduct(1,window.productID,window.cantidad,API.getOrderProduct(1,window.productID))
+            .then(function (r) {
                 if (r.error) {
                     console.error(r.error);
                 } else {
@@ -123,7 +123,7 @@
      **/
     function init() {
         refs.modal = Modal.init({
-            el: '#modal',
+            el: "#modal",
             products: state.products,
             onProductSelect: onProductSelect,
             onChangeQunatity: onChangeQunatity,
@@ -133,15 +133,15 @@
 
         // Inicializamos la tabla
         refs.table = Table.init({
-            el: '#orders',
+            el: "#orders",
             data: state.order
         });
 
         refs.global = {
             onDeleteProduct
-        }
+        };
     }
 
     init();
     window.refs = refs;
-})()
+})();
